@@ -15,8 +15,12 @@ color_dict_HSV = {'black': [[180, 255, 30], [0, 0, 0]],
 
 video_0 = cv2.VideoCapture(0)
 
-lower_bound = np.array([159, 50, 70])
-upper_bound = np.array([180, 255, 255])
+lower_bound = np.array([36, 50, 70])
+upper_bound = np.array([89, 255, 255])
+
+lower_bound2 = np.array([90, 50, 70])
+upper_bound2 = np.array([128, 255, 255])
+
 
 while(True):
     retu, frame = video_0.read()
@@ -24,18 +28,28 @@ while(True):
     j=0
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     mask = cv2.inRange(hsv, lower_bound, upper_bound)
+
+    mask2 = cv2.inRange(hsv, lower_bound2, upper_bound2)
     # define kernel size
     kernel = np.ones((7, 7), np.uint8)
     # Remove unnecessary noise from mask
     mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
     mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
 
+    mask2 = cv2.morphologyEx(mask2, cv2.MORPH_CLOSE, kernel)
+    mask2 = cv2.morphologyEx(mask2, cv2.MORPH_OPEN, kernel)
 
-    segmented_img = cv2.bitwise_and(frame, frame, mask=mask)
+    color1 = cv2.bitwise_and(frame, frame, mask=mask)
+
+    color2 = cv2.bitwise_and(frame, frame, mask=mask2)
+
     contours, hierarchy = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    contours2, hierarchy2 = cv2.findContours(mask2.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     #output = cv2.bitwise_and(frame,segmented_img, mask =mq)
     # Draw contour on original image
     output = cv2.drawContours(frame, contours, -1, (0, 0, 255), 3)
+    output = cv2.drawContours(frame, contours2, -1, (0, 255, 0), 3)
     cv2.imshow('frame',output)
 
 
