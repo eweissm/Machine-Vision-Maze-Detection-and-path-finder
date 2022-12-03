@@ -2,11 +2,21 @@
 import cv2
 from matplotlib import pyplot as plt
 import numpy as np
+color_dict_HSV = {'black': [[180, 255, 30], [0, 0, 0]],
+              'white': [[180, 18, 255], [0, 0, 231]],
+              'red1': [[180, 255, 255], [159, 50, 70]],
+              'red2': [[9, 255, 255], [0, 50, 70]],
+              'green': [[89, 255, 255], [36, 50, 70]],
+              'blue': [[128, 255, 255], [90, 50, 70]],
+              'yellow': [[35, 255, 255], [25, 50, 70]],
+              'purple': [[158, 255, 255], [129, 50, 70]],
+              'orange': [[24, 255, 255], [10, 50, 70]],
+              'gray': [[180, 18, 230], [0, 0, 40]]}
 
 video_0 = cv2.VideoCapture(0)
 
-lower_bound = np.array([90,50, 70])
-upper_bound = np.array([128, 255, 255])
+lower_bound = np.array([159, 50, 70])
+upper_bound = np.array([180, 255, 255])
 
 while(True):
     retu, frame = video_0.read()
@@ -23,9 +33,10 @@ while(True):
 
     segmented_img = cv2.bitwise_and(frame, frame, mask=mask)
     contours, hierarchy = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    #output = cv2.bitwise_and(frame,segmented_img, mask =mq)
     # Draw contour on original image
     output = cv2.drawContours(frame, contours, -1, (0, 0, 255), 3)
-    cv2.imshow('frame',frame)
+    cv2.imshow('frame',output)
 
 
     if cv2.waitKey(1) & 0xFF==ord('a'):
