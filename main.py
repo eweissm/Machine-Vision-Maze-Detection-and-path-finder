@@ -22,14 +22,10 @@ while(True):
 
 
     segmented_img = cv2.bitwise_and(frame, frame, mask=mask)
-    #for i in range(480):
-     #   for j in range(640):
-     #     if frame[i,j,1]>180 & frame[i,j,2]>180:
-    #          frame[i,j]=[0,0,0]
-    #print(frame[100, 100])
-   # frame[95:105,95:105]= [255, 0 ,0]
-
-    cv2.imshow('frame',segmented_img)
+    contours, hierarchy = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    # Draw contour on original image
+    output = cv2.drawContours(frame, contours, -1, (0, 0, 255), 3)
+    cv2.imshow('frame',frame)
 
 
     if cv2.waitKey(1) & 0xFF==ord('a'):
