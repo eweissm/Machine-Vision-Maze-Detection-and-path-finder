@@ -18,8 +18,8 @@ video_0 = cv2.VideoCapture(0)
 lower_bound = np.array([150, 150,120])
 upper_bound = np.array([170, 255, 255])
 
-lower_bound2 = np.array([90, 50, 70])
-upper_bound2 = np.array([128, 255, 255])
+lower_bound2 = np.array([36, 50, 70])
+upper_bound2 = np.array([89, 255, 255])
 
 d=0
 
@@ -49,7 +49,8 @@ while(True):
     contours2, hierarchy2 = cv2.findContours(mask2.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     C = np.empty([len(contours), 2], 'i')
-    Cfixed = np.empty([len(contours), 2], 'i')
+    C2 = np.empty([len(contours2), 2], 'i')
+    #fixed = np.empty([len(contours), 2], 'i')
 
     # Draw contour on original image
     output = cv2.drawContours(frame, contours, -1, (0, 0, 255), 3)
@@ -63,6 +64,17 @@ while(True):
             C[i,1] = int(M['m01'] / M['m00'])#cy
             output[C[i,1]-2:C[i,1]+2,C[i,0]-2:C[i,0]+2] = [255, 255, 255]
             output = cv2.putText(output, str(i),(C[i,0],C[i,1]),cv2.FONT_HERSHEY_SIMPLEX,1,(255, 0, 0),2,cv2.LINE_AA)
+
+    if len(contours2) > 0:
+        for i in range(len(contours2)):
+            M = cv2.moments(contours2[i])
+            C2[i, 0] = int(M['m10'] / M['m00'])  # cx
+            C2[i, 1] = int(M['m01'] / M['m00'])  # cy
+            output[C2[i, 1] - 2:C2[i, 1] + 2, C2[i, 0] - 2:C2[i, 0] + 2] = [255, 255, 255]
+            output = cv2.putText(output, str(i), (C2[i, 0], C2[i, 1]), cv2.FONT_HERSHEY_SIMPLEX, 1, (245, 244, 66),2, cv2.LINE_AA)
+
+    if len(contours2) > 1:
+        cv2.line(output, (C2[0,0],C2[0,1]),(C2[1,0],C2[1,1]), (255, 0, 0), 2 )
 
 #TODO: make it so that the index numbers are correct regardless of which dot is higher
        #for j in [1, 2, 3]:
