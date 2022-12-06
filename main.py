@@ -44,17 +44,18 @@ while(True):
     color1 = cv2.bitwise_and(frame, frame, mask=mask)
     color2 = cv2.bitwise_and(frame, frame, mask=mask2)
 
+#finds contours from colors
     contours, hierarchy = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     contours2, hierarchy2 = cv2.findContours(mask2.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     C = np.empty([len(contours), 2], 'i')
+    Cfixed = np.empty([len(contours), 2], 'i')
 
     # Draw contour on original image
     output = cv2.drawContours(frame, contours, -1, (0, 0, 255), 3)
     output = cv2.drawContours(frame, contours2,-1, (0, 255, 0), 3)
 
-    print(len(contours))
-
+#finds centerpoint of colored dots... adds to array and adds dot to image
     if len(contours)>0:
        for i in range(len(contours)):
             M = cv2.moments(contours[i])
@@ -63,7 +64,11 @@ while(True):
             output[C[i,1]-2:C[i,1]+2,C[i,0]-2:C[i,0]+2] = [255, 255, 255]
             output = cv2.putText(output, str(i),(C[i,0],C[i,1]),cv2.FONT_HERSHEY_SIMPLEX,1,(255, 0, 0),2,cv2.LINE_AA)
 
+#TODO: make it so that the index numbers are correct regardless of which dot is higher
+       #for j in [1, 2, 3]:
+           #if C[0,0] > C[j,0] & C[0,1] < C[j,1]
 
+# transform the image to rectangularize it
     if len(contours) == 4:
         destpts = np.float32([[0, 480], [640,480], [0, 0], [640, 0]])
         resmatrix = cv2.getPerspectiveTransform(np.float32(C), destpts)
