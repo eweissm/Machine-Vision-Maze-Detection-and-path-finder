@@ -61,11 +61,14 @@ while(True):
             C[i,0]= int(M['m10'] / M['m00']) #cx
             C[i,1] = int(M['m01'] / M['m00'])#cy
             output[C[i,1]-2:C[i,1]+2,C[i,0]-2:C[i,0]+2] = [255, 255, 255]
+            output = cv2.putText(output, str(i),(C[i,0],C[i,1]),cv2.FONT_HERSHEY_SIMPLEX,1,(255, 0, 0),2,cv2.LINE_AA)
 
-    #if len(contours2) == 4:
-        #destpts = np.float32([[100, 100], [540, 100], [100, 380], [540, 380]])
-        #resmatrix = cv2.getPerspectiveTransform(C, destpts)
-        #output = cv2.warpPerspective(output, resmatrix, (480, 640))
+
+
+    if len(contours2) == 4:
+        destpts = np.float32([[100, 100], [540, 100], [100, 380], [540, 380]])
+        resmatrix = cv2.getPerspectiveTransform(C, destpts)
+        output = cv2.warpPerspective(output, resmatrix, (480, 640))
 
     cv2.imshow('frame',output)
 
