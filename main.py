@@ -65,12 +65,12 @@ while(True):
 
 
     if len(contours) == 4:
-        destpts = np.float32([[480-d, 0], [480-d, 640-d], [0, 0], [0, 640-d]])
+        destpts = np.float32([[0, 480], [640,480], [0, 0], [640, 0]])
         resmatrix = cv2.getPerspectiveTransform(np.float32(C), destpts)
-        frame = cv2.warpPerspective(frame, resmatrix, (480, 640))
+        frame = cv2.warpPerspective(frame, resmatrix, (640, 480))
 
     cv2.imshow('frame',frame)
-
+    cv2.imshow('frame2', output)
 
     if cv2.waitKey(1) & 0xFF==ord('a'):
         break
