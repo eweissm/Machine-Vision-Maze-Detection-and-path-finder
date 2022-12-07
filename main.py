@@ -60,6 +60,7 @@ while(True):
             output = cv2.putText(output, str(i),(C[i,0],C[i,1]),cv2.FONT_HERSHEY_SIMPLEX,1,(255, 0, 0),2,cv2.LINE_AA)
 
             mazeWalls[contours[i]]=1
+#TODO Probably has something to do with how the contours store the points
 
 
     if len(contours2) > 0:
