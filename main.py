@@ -59,10 +59,7 @@ while(True):
             output[C[i,1]-2:C[i,1]+2,C[i,0]-2:C[i,0]+2] = [255, 255, 255]
             output = cv2.putText(output, str(i),(C[i,0],C[i,1]),cv2.FONT_HERSHEY_SIMPLEX,1,(255, 0, 0),2,cv2.LINE_AA)
 
-
-
-            for k in range(len(contours[i])):
-                mazeWalls[contours[i][k]]=1
+            mazeWalls[contours[i]]=1
 
 
     if len(contours2) > 0:
