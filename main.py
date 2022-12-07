@@ -19,7 +19,7 @@ while(True):
 
     i=0
     j=0
-    mazeWalls = np.zeros([680, 480])
+    mazeWalls = np.zeros([480, 640])
 
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
@@ -64,7 +64,6 @@ while(True):
             for k in range(len(contours[i])):
                 mazeWalls[contours[i][k]]=1
 
-    print(mazeWalls)
 
     if len(contours2) > 0:
         for i in range(len(contours2)):
@@ -89,7 +88,7 @@ while(True):
 
     cv2.imshow('frame',frame)
     cv2.imshow('frame2', output)
-
+    cv2.imshow('frame3', mazeWalls)
     if cv2.waitKey(1) & 0xFF==ord('a'):
         break
 video_0.release()
