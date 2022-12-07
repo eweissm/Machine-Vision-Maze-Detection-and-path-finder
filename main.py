@@ -2,16 +2,6 @@
 import cv2
 from matplotlib import pyplot as plt
 import numpy as np
-color_dict_HSV = {'black': [[180, 255, 30], [0, 0, 0]],
-              'white': [[180, 18, 255], [0, 0, 231]],
-              'red1': [[180, 255, 255], [159, 50, 70]],
-              'red2': [[9, 255, 255], [0, 50, 70]],
-              'green': [[89, 255, 255], [36, 50, 70]],
-              'blue': [[128, 255, 255], [90, 50, 70]],
-              'yellow': [[35, 255, 255], [25, 50, 70]],
-              'purple': [[158, 255, 255], [129, 50, 70]],
-              'orange': [[24, 255, 255], [10, 50, 70]],
-              'gray': [[180, 18, 230], [0, 0, 40]]}
 
 video_0 = cv2.VideoCapture(0)
 
@@ -21,12 +11,16 @@ upper_bound = np.array([170, 255, 255])
 lower_bound2 = np.array([36, 50, 70])
 upper_bound2 = np.array([89, 255, 255])
 
-d=0
+
 
 while(True):
+
     retu, frame = video_0.read()
+
     i=0
     j=0
+    mazeWalls = np.zeros([680, 480])
+
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
     mask = cv2.inRange(hsv, lower_bound, upper_bound)
@@ -64,6 +58,13 @@ while(True):
             C[i,1] = int(M['m01'] / M['m00'])#cy
             output[C[i,1]-2:C[i,1]+2,C[i,0]-2:C[i,0]+2] = [255, 255, 255]
             output = cv2.putText(output, str(i),(C[i,0],C[i,1]),cv2.FONT_HERSHEY_SIMPLEX,1,(255, 0, 0),2,cv2.LINE_AA)
+
+
+
+            for k in range(len(contours[i])):
+                mazeWalls[contours[i][k]]=1
+
+    print(mazeWalls)
 
     if len(contours2) > 0:
         for i in range(len(contours2)):
