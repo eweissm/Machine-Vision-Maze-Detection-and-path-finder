@@ -65,16 +65,19 @@ while(True):
             output[C[i,1]-2:C[i,1]+2,C[i,0]-2:C[i,0]+2] = [255, 255, 255]
             output = cv2.putText(output, str(i),(C[i,0],C[i,1]),cv2.FONT_HERSHEY_SIMPLEX,1,(255, 0, 0),2,cv2.LINE_AA)
 
+#put contours into mazeWall array
             for j in range(len(contours[i])):
-                #print(contours[i][j][0,0])
                 mazeWalls[contours[i][j][0,1]][contours[i][j][0,0]]=1
 
+#converts maze wall into a pixelated version with a given mesh size
+#This will reduce the computer power needed to do pathfinding and it will make it so glitchy contours dont get missed
        for a in range(np.size(meshedMazeWalls,0)):
             for b in range(np.size(meshedMazeWalls, 1)):
 
                 if np.any(mazeWalls[a*meshSize:a*meshSize+meshSize, b*meshSize:b*meshSize+meshSize]):
                     meshedMazeWalls[a][b]=1
 
+#finds centerpoint of colored dots... adds to array and adds dot to image
     if len(contours2) > 0:
         for i in range(len(contours2)):
             M = cv2.moments(contours2[i])
@@ -96,7 +99,7 @@ while(True):
         resmatrix = cv2.getPerspectiveTransform(np.float32(C), destpts)
         frame = cv2.warpPerspective(frame, resmatrix, (640, 480))
 
-
+#output images
     cv2.imshow('frame',frame)
     cv2.imshow('frame2', output)
     #cv2.imshow('frame3', mazeWalls)
