@@ -53,8 +53,8 @@ while(True):
     #fixed = np.empty([len(contours), 2], 'i')
 
     # Draw contour on original image
-    output = cv2.drawContours(frame, contours, -1, (0, 0, 255), 3)
-    output = cv2.drawContours(frame, contours2,-1, (0, 255, 0), 3)
+    output = cv2.drawContours(frame, contours, -1, (0, 0, 255), 5)
+    output = cv2.drawContours(frame, contours2,-1, (0, 255, 0), 5)
 
 #finds centerpoint of colored dots... adds to array and adds dot to image
     if len(contours)>0:
@@ -99,8 +99,8 @@ while(True):
 
     cv2.imshow('frame',frame)
     cv2.imshow('frame2', output)
-    cv2.imshow('frame3', mazeWalls)
-    cv2.imshow('frame4', meshedMazeWalls)
+    #cv2.imshow('frame3', mazeWalls)
+    cv2.imshow('frame4', cv2.resize(meshedMazeWalls,[640,480]))
     if cv2.waitKey(1) & 0xFF==ord('a'):
         break
 video_0.release()
