@@ -20,6 +20,7 @@ while(True):
     i=0
     j=0
     mazeWalls = np.zeros([480, 640])
+    meshedMazeWalls= np.zeros([48, 64])
 
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
@@ -59,8 +60,10 @@ while(True):
             output[C[i,1]-2:C[i,1]+2,C[i,0]-2:C[i,0]+2] = [255, 255, 255]
             output = cv2.putText(output, str(i),(C[i,0],C[i,1]),cv2.FONT_HERSHEY_SIMPLEX,1,(255, 0, 0),2,cv2.LINE_AA)
 
-            mazeWalls[contours[i]]=1
-#TODO Probably has something to do with how the contours store the points
+            for j in range(len(contours[i])):
+                #print(contours[i][j][0,0])
+                mazeWalls[contours[i][j][0,1]][contours[i][j][0,0]]=1
+
 
 
     if len(contours2) > 0:
@@ -83,6 +86,7 @@ while(True):
         destpts = np.float32([[0, 480], [640,480], [0, 0], [640, 0]])
         resmatrix = cv2.getPerspectiveTransform(np.float32(C), destpts)
         frame = cv2.warpPerspective(frame, resmatrix, (640, 480))
+
 
     cv2.imshow('frame',frame)
     cv2.imshow('frame2', output)
