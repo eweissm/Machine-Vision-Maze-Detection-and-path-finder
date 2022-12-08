@@ -3,6 +3,15 @@ import cv2
 #from matplotlib import pyplot as plt
 import numpy as np
 
+from pathfinding.core.diagonal_movement import DiagonalMovement
+from pathfinding.core.grid import Grid
+from pathfinding.finder.a_star import AStarFinder
+
+#this function performs a pathfinding algorithm (A*) given a maze, a starting location and an end location
+#the maze is a matrix where zeros are the wall of the maze and numbers are locations where travel is allowed. The higher the number the higher the cost
+def FindPath(maze, start, end):
+    grid = Grid(matrix=maze)
+
 #connect camera
 video_0 = cv2.VideoCapture(0)
 
@@ -15,13 +24,16 @@ upper_bound2 = np.array([89, 255, 255])
 
 meshSize =20
 
+cameraXDim = 640
+cameraYDim = 480
+
 while(True):
 
 #get video frames
     retu, frame = video_0.read()
 
 #create empty meshed to detect where maze walls are
-    mazeWalls = np.zeros([480, 640])
+    mazeWalls = np.zeros([cameraYDim, cameraXDim])
     meshedMazeWalls= np.zeros([int(np.size(mazeWalls,0)/meshSize), int(np.size(mazeWalls,1)/meshSize)])
 
 #get hsv colors
@@ -77,6 +89,8 @@ while(True):
                 if np.any(mazeWalls[a*meshSize:a*meshSize+meshSize, b*meshSize:b*meshSize+meshSize]):
                     meshedMazeWalls[a][b]=1
 
+    FindPath(meshedMazeWalls, [0,0], [])
+
 #finds centerpoint of colored dots... adds to array and adds dot to image
     if len(contours2) > 0:
         for i in range(len(contours2)):
@@ -95,17 +109,18 @@ while(True):
 
 # transform the image to rectangularize it
     if len(contours) == 4:
-        destpts = np.float32([[0, 480], [640,480], [0, 0], [640, 0]])
+        destpts = np.float32([[0, cameraYDim], [cameraXDim,cameraYDim], [0, 0], [cameraXDim, 0]])
         resmatrix = cv2.getPerspectiveTransform(np.float32(C), destpts)
-        frame = cv2.warpPerspective(frame, resmatrix, (640, 480))
+        frame = cv2.warpPerspective(frame, resmatrix, (cameraXDim, cameraYDim))
 
 #output images
     cv2.imshow('frame',frame)
     cv2.imshow('frame2', output)
     #cv2.imshow('frame3', mazeWalls)
-    cv2.imshow('frame4', cv2.resize(meshedMazeWalls,[640,480]))
+    cv2.imshow('frame4', cv2.resize(meshedMazeWalls,[cameraXDim,cameraYDim]))
     if cv2.waitKey(1) & 0xFF==ord('a'):
         break
 video_0.release()
 cv2.destroyAllWindows()
+
 
