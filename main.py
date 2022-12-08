@@ -10,14 +10,15 @@ from pathfinding.finder.a_star import AStarFinder
 #this function performs a pathfinding algorithm (A*) given a maze, a starting location and an end location
 #the maze is a matrix where zeros are the wall of the maze and numbers are locations where travel is allowed. The higher the number the higher the cost
 def FindPath(maze, startPoint, endPoint):
-    print(np.shape(endPoint))
+    #print(np.shape(endPoint))
     grid = Grid(matrix=maze)
     start = grid.node(startPoint[0], startPoint[1])
     end = grid.node(endPoint[0], endPoint[1])
     finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
     path, runs = finder.find_path(start, end, grid)
-    print('operations:', runs, 'path length:', len(path))
-    print(grid.grid_str(path=path, start=start, end=end))
+    #print('operations:', runs, 'path length:', len(path))
+    #print(grid.grid_str(path=path, start=start, end=end))
+    return path
 
 #connect camera
 video_0 = cv2.VideoCapture(0)
@@ -93,14 +94,21 @@ while(True):
        for a in range(np.size(meshedMazeWalls,0)):
             for b in range(np.size(meshedMazeWalls, 1)):
 
+                #TODO make it so this is all ones if there are no contours too
                 if not np.any(mazeWalls[a*meshSize:a*meshSize+meshSize, b*meshSize:b*meshSize+meshSize]):
                     meshedMazeWalls[a][b]=1
 
-    #print(np.shape(meshedMazeWalls))
     start = np.array([0, 0], 'i')
-    end = np.array([10, 10], 'i')
-    FindPath(meshedMazeWalls, start, end)
+    end = np.array([23,23], 'i')
+    path = FindPath(meshedMazeWalls, start, end)
 
+    #print(path[0][0])
+
+    for i in range(len(path)):
+        meshedMazeWalls[path[i][1]][path[i][0]] = .7
+
+    meshedMazeWalls[start[0],start[1]]=.5
+    meshedMazeWalls[end[0],end[1]]=.5
 #finds centerpoint of colored dots... adds to array and adds dot to image
     if len(contours2) > 0:
         for i in range(len(contours2)):
