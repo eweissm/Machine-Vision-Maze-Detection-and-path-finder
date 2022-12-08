@@ -1,29 +1,33 @@
 
 import cv2
-from matplotlib import pyplot as plt
+#from matplotlib import pyplot as plt
 import numpy as np
 
+#connect camera
 video_0 = cv2.VideoCapture(0)
 
+#specify color HSV bounds
 lower_bound = np.array([150, 150,120])
 upper_bound = np.array([170, 255, 255])
 
 lower_bound2 = np.array([36, 50, 70])
 upper_bound2 = np.array([89, 255, 255])
 
-
+meshSize =20
 
 while(True):
 
+#get video frames
     retu, frame = video_0.read()
 
-    i=0
-    j=0
+#create empty meshed to detect where maze walls are
     mazeWalls = np.zeros([480, 640])
-    meshedMazeWalls= np.zeros([48, 64])
+    meshedMazeWalls= np.zeros([int(np.size(mazeWalls,0)/meshSize), int(np.size(mazeWalls,1)/meshSize)])
 
+#get hsv colors
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
+#find color masks
     mask = cv2.inRange(hsv, lower_bound, upper_bound)
     mask2 = cv2.inRange(hsv, lower_bound2, upper_bound2)
 
@@ -43,6 +47,7 @@ while(True):
     contours, hierarchy = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     contours2, hierarchy2 = cv2.findContours(mask2.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
+#array of center points of contours
     C = np.empty([len(contours), 2], 'i')
     C2 = np.empty([len(contours2), 2], 'i')
     #fixed = np.empty([len(contours), 2], 'i')
@@ -64,7 +69,11 @@ while(True):
                 #print(contours[i][j][0,0])
                 mazeWalls[contours[i][j][0,1]][contours[i][j][0,0]]=1
 
+       for a in range(np.size(meshedMazeWalls,0)):
+            for b in range(np.size(meshedMazeWalls, 1)):
 
+                if np.any(mazeWalls[a*meshSize:a*meshSize+meshSize, b*meshSize:b*meshSize+meshSize]):
+                    meshedMazeWalls[a][b]=1
 
     if len(contours2) > 0:
         for i in range(len(contours2)):
@@ -91,6 +100,7 @@ while(True):
     cv2.imshow('frame',frame)
     cv2.imshow('frame2', output)
     cv2.imshow('frame3', mazeWalls)
+    cv2.imshow('frame4', meshedMazeWalls)
     if cv2.waitKey(1) & 0xFF==ord('a'):
         break
 video_0.release()
