@@ -42,6 +42,7 @@ while(True):
 
 #create empty meshed to detect where maze walls are
     meshedMazeWalls= np.zeros([int(cameraYDim/meshSize), int(cameraXDim/meshSize)])
+    mazeFrame = np.ones([int(cameraYDim/meshSize), int(cameraXDim/meshSize),3])
 
 #get hsv colors
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -92,18 +93,8 @@ while(True):
 
                 if np.any(color1[a*meshSize:a*meshSize+meshSize, b*meshSize:b*meshSize+meshSize]):
                     meshedMazeWalls[a][b]=1
+                    mazeFrame[a][b] = [0, 0, 0]
 
-    start = np.array([0, 0], 'i')
-    end = np.array([63,47], 'i')
-    path = FindPath(meshedMazeWalls, start, end)
-
-    #print(path[0][0])
-
-    for i in range(len(path)):
-        meshedMazeWalls[path[i][1]][path[i][0]] = .5
-
-    meshedMazeWalls[start[1],start[0]]=.7
-    meshedMazeWalls[end[1],end[0]]=.7
 #finds centerpoint of colored dots... adds to array and adds dot to image
     if len(contours2) > 0:
         for i in range(len(contours2)):
@@ -115,6 +106,21 @@ while(True):
 
     if len(contours2) > 1:
         cv2.line(output, (C2[0,0],C2[0,1]),(C2[1,0],C2[1,1]), (255, 0, 0), 2 )
+
+    if len(contours2)>=2:
+        start = np.array([int(C2[0,0]/meshSize), int(C2[0,1]/meshSize)], 'i')
+        end = np.array([int(C2[1,0]/meshSize), int(C2[1,1]/meshSize)], 'i')
+    else:
+        start = np.array([1, 1], 'i')
+        end = np.array([62,46], 'i')
+
+    path = FindPath(meshedMazeWalls, start, end)
+
+    for i in range(len(path)):
+        mazeFrame[path[i][1]][path[i][0]] = [255, 0, 0]
+
+    mazeFrame[start[1],start[0]] = [0, 0, 255]
+    mazeFrame[end[1],end[0]] = [0, 255, 0]
 
 #TODO: make it so that the index numbers are correct regardless of which dot is higher
        #for j in [1, 2, 3]:
@@ -129,8 +135,8 @@ while(True):
 #output images
     cv2.imshow('frame',frame)
     cv2.imshow('frame2', output)
-    cv2.imshow('frame3', color1)
-    cv2.imshow('frame4', cv2.resize(meshedMazeWalls,[cameraXDim,cameraYDim]))
+    cv2.imshow('frame3', cv2.resize(mazeFrame,[cameraXDim,cameraYDim]))
+
     if cv2.waitKey(1) & 0xFF==ord('a'):
         break
 video_0.release()
