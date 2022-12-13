@@ -11,7 +11,7 @@ from pathfinding.finder.a_star import AStarFinder
 #the maze is a matrix where zeros are the wall of the maze and numbers are locations where travel is allowed. The higher the number the higher the cost
 def FindPath(maze, startPoint, endPoint):
     #print(np.shape(endPoint))
-    grid = Grid(np.len(maze,0),np.shape(maze,1) ,matrix=maze, inverse=True)
+    grid = Grid(np.size(maze,1),np.size(maze,0) ,matrix=maze, inverse=True)
     start = grid.node(startPoint[0], startPoint[1])
     end = grid.node(endPoint[0], endPoint[1])
     finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
@@ -92,9 +92,9 @@ while(True):
 
                 if np.any(color1[a*meshSize:a*meshSize+meshSize, b*meshSize:b*meshSize+meshSize]):
                     meshedMazeWalls[a][b]=1
-    print(np.shape(meshedMazeWalls))
+
     start = np.array([0, 0], 'i')
-    end = np.array([47,47], 'i')
+    end = np.array([63,47], 'i')
     path = FindPath(meshedMazeWalls, start, end)
 
     #print(path[0][0])
@@ -102,8 +102,8 @@ while(True):
     for i in range(len(path)):
         meshedMazeWalls[path[i][1]][path[i][0]] = .5
 
-    meshedMazeWalls[start[0],start[1]]=.7
-    meshedMazeWalls[end[0],end[1]]=.7
+    meshedMazeWalls[start[1],start[0]]=.7
+    meshedMazeWalls[end[1],end[0]]=.7
 #finds centerpoint of colored dots... adds to array and adds dot to image
     if len(contours2) > 0:
         for i in range(len(contours2)):
