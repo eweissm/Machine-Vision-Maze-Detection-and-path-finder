@@ -11,7 +11,7 @@ from pathfinding.finder.a_star import AStarFinder
 #the maze is a matrix where zeros are the wall of the maze and numbers are locations where travel is allowed. The higher the number the higher the cost
 def FindPath(maze, startPoint, endPoint):
     #print(np.shape(endPoint))
-    grid = Grid(matrix=maze, inverse=True)
+    grid = Grid(np.len(maze,0),np.shape(maze,1) ,matrix=maze, inverse=True)
     start = grid.node(startPoint[0], startPoint[1])
     end = grid.node(endPoint[0], endPoint[1])
     finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
@@ -30,7 +30,7 @@ upper_bound = np.array([170, 255, 255])
 lower_bound2 = np.array([36, 50, 70])
 upper_bound2 = np.array([89, 255, 255])
 
-meshSize =20
+meshSize =10
 
 cameraXDim = 640
 cameraYDim = 480
@@ -41,8 +41,7 @@ while(True):
     retu, frame = video_0.read()
 
 #create empty meshed to detect where maze walls are
-    mazeWalls = np.zeros([cameraYDim, cameraXDim])
-    meshedMazeWalls= np.zeros([int(np.size(mazeWalls,0)/meshSize), int(np.size(mazeWalls,1)/meshSize)])
+    meshedMazeWalls= np.zeros([int(cameraYDim/meshSize), int(cameraXDim/meshSize)])
 
 #get hsv colors
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -85,20 +84,17 @@ while(True):
             output[C[i,1]-2:C[i,1]+2,C[i,0]-2:C[i,0]+2] = [255, 255, 255]
             output = cv2.putText(output, str(i),(C[i,0],C[i,1]),cv2.FONT_HERSHEY_SIMPLEX,1,(255, 0, 0),2,cv2.LINE_AA)
 
-#put contours into mazeWall array
-            for j in range(len(contours[i])):
-                mazeWalls[contours[i][j][0,1]][contours[i][j][0,0]]=1
 
 #converts maze wall into a pixelated version with a given mesh size
 #This will reduce the computer power needed to do pathfinding and it will make it so glitchy contours dont get missed
        for a in range(np.size(meshedMazeWalls,0)):
             for b in range(np.size(meshedMazeWalls, 1)):
 
-                if np.any(mazeWalls[a*meshSize:a*meshSize+meshSize, b*meshSize:b*meshSize+meshSize]):
+                if np.any(color1[a*meshSize:a*meshSize+meshSize, b*meshSize:b*meshSize+meshSize]):
                     meshedMazeWalls[a][b]=1
     print(np.shape(meshedMazeWalls))
     start = np.array([0, 0], 'i')
-    end = np.array([23,24], 'i')
+    end = np.array([47,47], 'i')
     path = FindPath(meshedMazeWalls, start, end)
 
     #print(path[0][0])
@@ -133,7 +129,7 @@ while(True):
 #output images
     cv2.imshow('frame',frame)
     cv2.imshow('frame2', output)
-    #cv2.imshow('frame3', mazeWalls)
+    cv2.imshow('frame3', color1)
     cv2.imshow('frame4', cv2.resize(meshedMazeWalls,[cameraXDim,cameraYDim]))
     if cv2.waitKey(1) & 0xFF==ord('a'):
         break
