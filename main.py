@@ -23,13 +23,13 @@ def FindPath(maze, startPoint, endPoint):
 video_0 = cv2.VideoCapture(0)
 
 #specify color HSV bounds
-lower_bound = np.array([150, 150,120])
+lower_bound = np.array([130, 50,50])
 upper_bound = np.array([170, 255, 255])
 
-lower_bound2 = np.array([36, 50, 70])
+lower_bound2 = np.array([36, 50, 70]) # define green (color of maze start and end)
 upper_bound2 = np.array([89, 255, 255])
 
-lower_bound3 = np.array([25, 50, 70])
+lower_bound3 = np.array([25, 50, 70]) # define yellow (color of maze corners)
 upper_bound3 = np.array([35, 255, 255])
 
 meshSize =10
